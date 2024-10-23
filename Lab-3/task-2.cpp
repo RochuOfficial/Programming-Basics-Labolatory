@@ -38,7 +38,7 @@ int main(int argc, char *argv[]){
 
             case 'r':
             case 'R':
-                // Angle is already in radians.
+                sinus = sin(angle);
             break;
 
             default:
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]){
             break;
         }
 
-        sinus = sin(angle);
+
         cout << "Sin kata " << angle << " to: " << sinus << endl << endl;
     }
     return FAILURE;
