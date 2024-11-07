@@ -2,6 +2,7 @@
 // ---------- IMPORT LIBRARIES ----------
 #include <cstdlib>
 #include <iostream>
+#include <iomanip>
 
 // ---------- DEFINE CONSTANTS ----------
 #define SUCCES 0
@@ -108,14 +109,12 @@ long long unsigned int newtonSymbolI(int n, int k){
 void displayPascalTriangleI(int rows){
     cout << endl << "Funckja iteracyjna:" << endl;
     for (int row = 0; row < rows; row++){
-        cout << row + 1;
+        cout << setw(2) << row + 1 << ". ";
 
-        for (int space = 0; space <= rows - row - 1; space++){
-            cout << "  ";
-        }
+        cout << setw((rows - row) * 3) << "";
 
         for (int symbol = 0; symbol <= row; symbol++){
-            cout << newtonSymbolI(row, symbol) << "   ";
+            cout << setw(6) << newtonSymbolI(row, symbol);
         }
 
         cout << endl;
@@ -125,14 +124,12 @@ void displayPascalTriangleI(int rows){
 void displayPascalTriangleR(int rows){
     cout << endl <<  "Funkcja rekurencyjna:" << endl;
     for (int row = 0; row < rows; row++){
-        cout << row + 1;
+        cout << setw(2) << row + 1 << ". ";
 
-        for (int space = 0; space <= rows - row - 1; space++){
-            cout << "  ";
-        }
+        cout << setw((rows - row) * 3) << "";
 
         for (int symbol = 0; symbol <= row; symbol++){
-            cout << newtonSymbolR(row, symbol) << "   ";
+            cout << setw(6) << newtonSymbolR(row, symbol);
         }
 
         cout << endl;
