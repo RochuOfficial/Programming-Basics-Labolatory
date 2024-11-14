@@ -16,16 +16,16 @@ using namespace std;
 
 // ---------- DEFINE FUNCTIONS ----------
 void menu();
-void generateArray(int[]);
-void displayArray(int[]);
-double calculateMean(int[]);
-void copyArray(int[], int[]);
-void sortArray(int[]);
-double calculateMedian(int[]);
-void calculateGradesCount(int[], int[]);
+void generateArray(int[], int);
+void displayArray(int[], int);
+double calculateMean(int[], int);
+void copyArray(int[], int[], int);
+void sortArray(int[], int);
+double calculateMedian(int[], int);
+void calculateGradesCount(int[], int[], int);
 void clearArray(int[], int);
-vector<int> gradesFrequency(int[]);
-void displayHistogram(int[]);
+vector<int> gradesFrequency(int[], int);
+void displayHistogram(int[], int);
 
 // ---------- MAIN ----------
 int main(int argc, char *argv[]){
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
     int indeces[GRADES_COUNT_ARRAY_SIZE] = {0};
     vector<int> maxIndicies;
 
-    generateArray(gradesArray);
+    generateArray(gradesArray, GRADES_ARRAY_SIZE);
 
     while(true){
         menu();
@@ -45,40 +45,40 @@ int main(int argc, char *argv[]){
 
         switch(choice){
             case 1:
-                generateArray(gradesArray);
+                generateArray(gradesArray, GRADES_ARRAY_SIZE);
                 cout << "Tablica wylosowana" << endl;
             break;
             case 2:
-                displayArray(gradesArray);
+                displayArray(gradesArray, GRADES_ARRAY_SIZE);
             break;
             case 3:
-                cout << "Srednia z ocen to: " << calculateMean(gradesArray) << endl;
+                cout << "Srednia z ocen to: " << calculateMean(gradesArray, GRADES_ARRAY_SIZE) << endl;
             break;
             case 4:
-                copyArray(gradesArray, sortedArray);
-                sortArray(sortedArray);
-                displayArray(sortedArray);
+                copyArray(gradesArray, sortedArray, GRADES_ARRAY_SIZE);
+                sortArray(sortedArray, GRADES_ARRAY_SIZE);
+                displayArray(sortedArray, GRADES_ARRAY_SIZE);
             break;
             case 5:
-                cout << "Mediana ocen to: " << calculateMedian(sortedArray) << endl;
+                cout << "Mediana ocen to: " << calculateMedian(sortedArray, GRADES_ARRAY_SIZE) << endl;
             break;
             case 6:
-                calculateGradesCount(gradesArray, gradesCount);
+                calculateGradesCount(gradesArray, gradesCount, GRADES_ARRAY_SIZE);
                 cout << "Liczba poszczegolnych ocen:" << endl;
                 for (int i = 0; i < 11; i++){
                     cout << setw(4) << "Ocena " << i << ": " << gradesCount[i] << " razy" << endl;
                 }
             break;
             case 7:
-                maxIndicies = gradesFrequency(gradesCount);
+                maxIndicies = gradesFrequency(gradesCount, GRADES_COUNT_ARRAY_SIZE);
                 cout << "Najczestsze oceny to:" << endl;
                 for (int index : maxIndicies){
                     cout << index << endl;
                 }
             break;
             case 8:
-                calculateGradesCount(gradesArray, gradesCount);
-                displayHistogram(gradesCount);
+                calculateGradesCount(gradesArray, gradesCount, GRADES_ARRAY_SIZE);
+                displayHistogram(gradesCount, GRADES_COUNT_ARRAY_SIZE);
             break;
             case 0:
                 cout << "Zakmykanie programu!" << endl;
@@ -108,39 +108,39 @@ void menu(){
     cout << "Wybierz: ";
 }
 
-void generateArray(int grades[]){
+void generateArray(int grades[], int arraySize){
     srand(time(NULL));
 
-    for (int i = 0; i < GRADES_ARRAY_SIZE; i++){
+    for (int i = 0; i < arraySize; i++){
         grades[i] = rand() % 11;
     }
 }
 
-void displayArray(int grades[]){
-    for (int i = 0; i < GRADES_ARRAY_SIZE; i++){
+void displayArray(int grades[], int arraySize){
+    for (int i = 0; i < arraySize; i++){
         if (i % 20 == 0) cout << endl;
         cout << setw(4) << grades[i];
     }
 }
 
-double calculateMean(int grades[]){
+double calculateMean(int grades[], int arraySize){
     double mean(0.0);
 
-    for(int i = 0; i < GRADES_ARRAY_SIZE; i++){
+    for(int i = 0; i < arraySize; i++){
         mean += grades[i];
     }
-    return mean / GRADES_ARRAY_SIZE;
+    return mean / arraySize;
 }
 
-void copyArray(int source[], int destination[]){
-    for (int i = 0; i < GRADES_ARRAY_SIZE; i++){
+void copyArray(int source[], int destination[], int arraySize){
+    for (int i = 0; i < arraySize; i++){
         destination[i] = source[i];
     }
 }
 
-void sortArray(int copiedArray[]){
-    for (int i = 0; i < GRADES_ARRAY_SIZE; i++){
-        for (int j = 0; j < GRADES_ARRAY_SIZE - i - 1; j++){
+void sortArray(int copiedArray[], int arraySize){
+    for (int i = 0; i < arraySize; i++){
+        for (int j = 0; j < arraySize - i - 1; j++){
             if (copiedArray[j] > copiedArray[j + 1]){
                 int temp = copiedArray[j];
                 copiedArray[j] = copiedArray[j + 1];
@@ -150,19 +150,19 @@ void sortArray(int copiedArray[]){
     }
 }
 
-double calculateMedian(int grades[]){
+double calculateMedian(int grades[], int arraySize){
     double median;
 
-    if (GRADES_ARRAY_SIZE % 2 == 1) median = grades[GRADES_ARRAY_SIZE / 2 + 1];
-    else median = (grades[GRADES_ARRAY_SIZE / 2] + grades[GRADES_ARRAY_SIZE / 2 + 1]) / 2;
+    if (arraySize % 2 == 1) median = grades[arraySize / 2 + 1];
+    else median = (grades[arraySize / 2] + grades[arraySize / 2 + 1]) / 2;
 
     return median;
 }
 
-void calculateGradesCount(int grades[], int gradesCount[]){
-    clearArray(gradesCount, GRADES_COUNT_ARRAY_SIZE);
+void calculateGradesCount(int grades[], int gradesCount[], int arraySize){
+    clearArray(gradesCount, arraySize);
 
-    for (int i = 0; i < GRADES_ARRAY_SIZE; i++){
+    for (int i = 0; i < arraySize; i++){
         gradesCount[grades[i]]++;
     }
 }
@@ -173,30 +173,30 @@ void clearArray(int givenArray[], int arraySize){
     }
 }
 
-vector<int> gradesFrequency(int gradesFrequency[]){
+vector<int> gradesFrequency(int gradesFrequency[], int arraySize){
     int highest = gradesFrequency[0];
     vector<int> indicies;
 
-    for (int i = 1; i < GRADES_COUNT_ARRAY_SIZE; i++){
+    for (int i = 1; i < arraySize; i++){
         if(gradesFrequency[i] > highest) highest = gradesFrequency[i];
     }
 
-    for (int i = 0; i < GRADES_COUNT_ARRAY_SIZE; i++){
+    for (int i = 0; i < arraySize; i++){
         if (gradesFrequency[i] == highest) indicies.push_back(i);
     }
 
     return indicies;
 }
 
-void displayHistogram(int gradesCount[]){
+void displayHistogram(int gradesCount[], int arraySize){
     int maxCount = 0;
 
-    for (int i = 0; i < GRADES_COUNT_ARRAY_SIZE; i++){
+    for (int i = 0; i < arraySize; i++){
         if(gradesCount[i] > maxCount) maxCount = gradesCount[i];
     }
 
     for(int level = maxCount; level > 0; level--){
-        for(int i = 0; i < GRADES_COUNT_ARRAY_SIZE; i++){
+        for(int i = 0; i < arraySize; i++){
             if(gradesCount[i] > level)
                 cout << setw(4) << "*";
             else
@@ -205,9 +205,9 @@ void displayHistogram(int gradesCount[]){
         cout << endl;
     }
 
-    cout << setw(4 * GRADES_COUNT_ARRAY_SIZE) << setfill('-') << "" << setfill(' ') << endl;
+    cout << setw(4 * arraySize) << setfill('-') << "" << setfill(' ') << endl;
 
-    for (int i = 0; i < GRADES_COUNT_ARRAY_SIZE; i++){
+    for (int i = 0; i < arraySize; i++){
         cout << setw(4) << i;
     }
 
