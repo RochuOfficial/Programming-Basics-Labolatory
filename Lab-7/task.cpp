@@ -31,9 +31,13 @@ void displayDynamicMatrix(int** matrix, int rows, int columns);
 int main(int argc, char *argv[]){
 
     int choice, bottomCutOff, upperCutOff, m, n;
-    int matrix[MATRIX_SIZE][MATRIX_SIZE], maxValue[MATRIX_SIZE] = {0};
+    int matrix[MATRIX_SIZE][MATRIX_SIZE], maxValue[MATRIX_SIZE];
     bool matrixFilled = false, upToDown, freedMemory = false;
     char sortChoice;
+
+    for (int i = 0; i < MATRIX_SIZE; i++){
+        maxValue[i] = -1;
+    }
 
     while(true){
         menu();
@@ -45,8 +49,10 @@ int main(int argc, char *argv[]){
                 cin >> bottomCutOff;
                 cout << "Podaj gorna granice: ";
                 cin >> upperCutOff;
+
                 fillMatrix(matrix, MATRIX_SIZE, MATRIX_SIZE, bottomCutOff, upperCutOff);
                 matrixFilled = true;
+
                 cout << "Macierz zostala wypelniona!" << endl;
                 break;
             case 2:
@@ -62,14 +68,18 @@ int main(int argc, char *argv[]){
                     cout << "Najpierw wypelnij macierz!" << endl;
                     break;
                 }
+
                 findMaxValue(matrix, MATRIX_SIZE, MATRIX_SIZE, maxValue);
+
                 cout << setfill('-') << setw(30) << "" << setfill(' ') << endl;
+
                 cout << "Wiersz(e) z najwieksza suma:" << endl;
                 for (int i = 0; i < MATRIX_SIZE; i++){
-                    if (maxValue[i] != 0){
+                    if (maxValue[i] >= 0){
                         for (int j = 0; j < MATRIX_SIZE; j++){
                             cout << setw(DISPLAY_WIDTH) << matrix[maxValue[i]][j];
                         }
+                        cout << endl;
                     }
                 }
                 break;
@@ -78,14 +88,21 @@ int main(int argc, char *argv[]){
                     cout << "Najpierw wypelnij macierz!" << endl;
                     break;
                 }
+                do{
                 cout << "Jak chcesz posortowac kolumny? (G - od gory | D - od dolu): ";
                 cin >> sortChoice;
+
+                if (sortChoice != 'G' && sortChoice != 'g' &&
+                       sortChoice != 'D' && sortChoice != 'd'){
+                    cout << endl << "Wybierz wlasciwa opcje!" << endl;
+                       }
+
+                }while(sortChoice != 'G' && sortChoice != 'g' &&
+                       sortChoice != 'D' && sortChoice != 'd');
+
                 if (sortChoice == 'G' || sortChoice == 'g') upToDown = true;
-                else if (sortChoice == 'D' || sortChoice == 'd') upToDown = false;
-                else{
-                    cout << "Wybierz wlasciwa opcje!" << endl;
-                    break;
-                }
+                else upToDown = false;
+
                 sortColumns(matrix, MATRIX_SIZE, MATRIX_SIZE, upToDown);
                 cout << "Macierz zostala posortowana!";
                 break;
@@ -160,7 +177,8 @@ void displayMatrix(int givenMatrix[][MATRIX_SIZE], int rows, int columns){
 }
 
 void findMaxValue(int givenMatrix[][MATRIX_SIZE], int rows, int columns, int maxValuesArray[]){
-    int maxValue = INT_MIN, sum = 0, rowsCount = 0;
+    int maxValue, sum = 0, rowsCount = 0;
+    int sumArray[rows];
 
     cout << endl << "Macierz:" << setw(DISPLAY_WIDTH*MATRIX_SIZE) << "Suma:" << endl;
     for (int i = 0; i < rows; i++){
@@ -168,16 +186,23 @@ void findMaxValue(int givenMatrix[][MATRIX_SIZE], int rows, int columns, int max
             sum += givenMatrix[i][j];
             cout << setw(DISPLAY_WIDTH) << givenMatrix[i][j];
         }
-        if (sum > maxValue){
-            maxValue = sum;
-            rowsCount = 1;
-            maxValuesArray[0] = i;
-        }
-        else if (sum == maxValue){
-            maxValuesArray[rowsCount] = i;
-            rowsCount++;
-        }
         cout << setw(2*DISPLAY_WIDTH) << sum << endl;
+
+        sumArray[i] = sum;
+        sum = 0;
+    }
+
+    maxValue = sumArray[0];
+    for (int i = 1; i < rows; i++){
+        if (sumArray[i] > maxValue){
+            maxValue = sumArray[i];
+        }
+    }
+
+    for (int i = 0; i < rows; i++){
+        if (sumArray[i] == maxValue){
+            maxValuesArray[i] = i;
+        }
     }
 }
 
@@ -252,7 +277,7 @@ void dynamicMatrixMain(){
     int choice = 1, m, n, bottomCutOff, upperCutOff;
     bool freedMemory = false;
 
-    cout << "Podaj liczbe wierszy: ";
+    cout << endl << "Podaj liczbe wierszy: ";
     cin >> m;
     cout << "Podaj liczbe kolumn: ";
     cin >> n;
@@ -268,7 +293,7 @@ void dynamicMatrixMain(){
 
     dynamicFill(dynamicMatrix, m, n, bottomCutOff, upperCutOff);
 
-    cout << "Macierz zostala swtorzona!" << endl << endl;
+    cout << endl << "Macierz zostala swtorzona!" << endl << endl;
 
     while(choice != 0 || !freedMemory){
         dynamicMMenu();
@@ -276,32 +301,54 @@ void dynamicMatrixMain(){
 
         switch(choice){
             case 1:
-                cout << "Podaj dolna granice: ";
+                cout << endl << "Podaj dolna granice: ";
                 cin >> bottomCutOff;
                 cout << "Podaj gorna granice: ";
                 cin >> upperCutOff;
                 dynamicFill(dynamicMatrix, m, n, bottomCutOff, upperCutOff);
-                cout << "Dynamiczna macierz zostala wypelniona!" << endl;
+                cout << endl << "Dynamiczna macierz zostala wypelniona!" << endl;
                 freedMemory = false;
                 break;
             case 2:
-                cout << "Twoja dynamiczna macierz:" << endl;
+                cout << endl << "Twoja dynamiczna macierz:" << endl;
                 displayDynamicMatrix(dynamicMatrix, m, n);
                 break;
             case 3:
+                if (!freedMemory){
+                    cout << endl << "Najpierw zwolnij pamiec bierzacej macierzy!" << endl;
+                    break;
+                }
+                cout << endl << "Podaj liczbe wierszy: ";
+                cin >> m;
+                cout << "Podaj liczbe kolumn: ";
+                cin >> n;
+                cout << "Podaj dolna granice: ";
+                cin >> bottomCutOff;
+                cout << "Podaj gorna granice: ";
+                cin >> upperCutOff;
+
+                dynamicMatrix = new int*[m];
+                for (int i = 0; i < m; i++){
+                    dynamicMatrix[i] = new int[n];
+                }
+
+                dynamicFill(dynamicMatrix, m, n, bottomCutOff, upperCutOff);
+                freedMemory = false;
+                break;
+            case 4:
                 deleteDynamicM(dynamicMatrix, m);
                 freedMemory = true;
-                cout << "Pamiec zostala zwolniona!" << endl;
+                cout << endl << "Pamiec zostala zwolniona!" << endl;
                 break;
             case 0:
                 if (!freedMemory){
-                    cout << "Najpierw zwolnij pamiec!" << endl;
+                    cout << endl << "Najpierw zwolnij pamiec!" << endl;
                     break;
                 }
-                cout << "Zamykanie dynamicznej macierzy..." << endl;
+                cout << endl << "Zamykanie dynamicznej macierzy..." << endl;
                 break;
             default:
-                cout << "Wybierz wlasciwa opcje!" << endl;
+                cout << endl << "Wybierz wlasciwa opcje!" << endl;
                 break;
         }
         cout << endl << endl;
@@ -314,7 +361,8 @@ void dynamicMMenu(){
     cout << "---------------------------------------------" << endl;
     cout << "1. Wypelnij macierz" << endl;
     cout << "2. Wyswietl macierz" << endl;
-    cout << "3. Zwolnij pamiec" << endl;
+    cout << "3. Stworz nowa macierz" << endl;
+    cout << "4. Zwolnij pamiec" << endl;
     cout << "0. Zakoncz dynamiczna macierz" << endl;
     cout << "Wybierz: ";
 }
