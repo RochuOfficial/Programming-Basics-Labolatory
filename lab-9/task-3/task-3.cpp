@@ -60,7 +60,7 @@ int main(int argc, char *argv[]){
 
         switch (choice){
             case 1:
-                if (loadAuthors(authors, AUTHORS_ARRAY_SIZE)){
+                if (!loadAuthors(authors, AUTHORS_ARRAY_SIZE)){
                     break;
                 }
                 authorsLoaded = true;
